@@ -7,7 +7,7 @@ class Room extends Dbh {
     }
 
     public function getRoomByID($id) {
-        $sql = "SELECT * FROM room WHERE id = ?";
+        $sql = "SELECT * FROM rooms WHERE id = ?";
         $stmt = $this->connect()->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch();
