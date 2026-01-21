@@ -1,48 +1,113 @@
 <?php
 
-require_once __DIR__ . "/../include/autoload.php";
-require_once __DIR__ . "/../controllers/BookingController.php";
+declare(strict_types=1);
 
-$bookingController = new BookingController();
-$action = $_GET['action'] ?? null;
+require_once __DIR__ . '/../include/autoload.php';
 
-switch ($action) {
+use App\Database\Database;
+use App\Exceptions\NotFoundException;
+use App\Exceptions\ValidationException;
+use App\Exceptions\UnauthorizedException;
+use App\Exceptions\ForbiddenException;
+use App\Exceptions\InternalServerException;
 
-    case 'requestBooking':
-        if (!isset($_GET['user_id'], $_GET['room_id'], $_GET['booking_date'], $_GET['start_time'], $_GET['end_time'], $_GET['purpose'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing parameters']);
-            break;
-        }
-        $bookingController->requestBooking(
-            $_GET['user_id'],
-            $_GET['room_id'],
-            $_GET['booking_date'],
-            $_GET['start_time'],
-            $_GET['end_time'],
-            $_GET['purpose']
-        );
-        break;
+header('Content-Type: application/json');
+$container = require __DIR__ . '/../config/container.php';
 
-    case 'userBookings':
-        if (!isset($_GET['user_id'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing user_id']);
-            break;
-        }
-        $bookingController->viewUserBookings($_GET['user_id']);
-        break;
+$config = require __DIR__ . '/../config/database.php';
+$routes = require __DIR__ . '/../routes/api.php';
 
-    case 'allBookings':
-        $bookingController->viewAllBookings();
-        break;
+$method = strtoupper(($_SERVER['REQUEST_METHOD']) ?? 'GET');
 
-    case 'changeStatus':
-        if (!isset($_GET['booking_id'], $_GET['status'])) {
-            echo json_encode(['success' => false, 'message' => 'Missing booking_id or status']);
-            break;
-        }
-        $bookingController->changeBookingStatus($_GET['booking_id'], $_GET['status']);
-        break;
+$allowedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'];
+if (!in_array($method, $allowedMethods)) {
+    http_response_code(405);
+    header('Allow: ' . implode(', ', $allowedMethods));
+    echo json_encode(
+        ['status' => 'error', 'message' => "HTTP method $method not allowed"],
+        JSON_THROW_ON_ERROR
+    );
+    exit();
+}
 
-    default:
-        echo json_encode(['error' => 'Invalid action']);
+if ($method === 'OPTIONS') {
+    http_response_code(204);
+    header('Allow: ' . implode(', ', $allowedMethods));
+    exit;
+}
+
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+$baseDir = rtrim(dirname($scriptName), '/');
+
+$uri = str_replace([$scriptName, $baseDir], '', $uri);
+$uri = '/' . ltrim($uri, '/');
+$uri = rtrim($uri, '/') ?: '/';
+$uri = strtolower($uri);
+
+try {
+    $pdo = Database::connect($config);
+} catch (\Throwable $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    echo json_encode(
+        ['status' => 'error', 'message' => 'Service unavailable'],
+        JSON_THROW_ON_ERROR
+    );
+    exit();
+}
+
+if (!isset($routes[$method][$uri])) {
+    http_response_code(404);
+    echo json_encode(
+        ['status' => 'error', 'message' => 'Route not found'],
+        JSON_THROW_ON_ERROR
+    );
+    exit;
+}
+
+try {
+    [$controllerClass, $action] = $routes[$method][$uri];
+    if (!isset($container[$controllerClass])) {
+        throw new InternalServerException('Controller not registered');
+    }
+    $controller = $container[$controllerClass]($pdo);
+    if (!is_callable([$controller, $action])) {
+        throw new NotFoundException('Action not found');
+    }
+    $response = $controller->$action();
+    echo json_encode($response, JSON_THROW_ON_ERROR);
+
+} catch (NotFoundException $e) {
+    http_response_code(404);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_THROW_ON_ERROR);
+
+} catch (ValidationException $e) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_THROW_ON_ERROR);
+
+} catch (UnauthorizedException $e) {
+    http_response_code(401);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_THROW_ON_ERROR);
+
+} catch (ForbiddenException $e) {
+    http_response_code(403);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_THROW_ON_ERROR);
+
+} catch (InternalServerException $e) {
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => $e->getMessage()], JSON_THROW_ON_ERROR);
+
+} catch (\JsonException $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    echo '{"status":"error","message":"Service unavailable"}';
+
+} catch (\Throwable $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    echo json_encode(
+        ['status' => 'error', 'message' => 'Service unavailable'],
+        JSON_THROW_ON_ERROR
+    );
 }
