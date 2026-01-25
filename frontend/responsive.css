@@ -1,0 +1,344 @@
+/* IIITH Room Booking Portal - Responsive Styles */
+
+/* Tablet Screens (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .header-content {
+        padding: 0 20px;
+    }
+
+    .search-bar input {
+        width: 250px;
+    }
+
+    .main-content {
+        padding: 30px 20px;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .content-section {
+        padding: 25px;
+    }
+}
+
+/* Mobile Screens (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    /* Header Adjustments */
+    .menu-icon {
+        display: block;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .search-bar {
+        display: none;
+    }
+
+    .user-section {
+        gap: 15px;
+    }
+
+    .user-profile span {
+        display: none;
+    }
+
+    /* Sidebar Adjustments */
+    .sidebar {
+        left: -260px;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* Main Content Adjustments */
+    .main-content {
+        margin-left: 0;
+        padding: 30px 15px;
+    }
+
+    /* Show Mobile Search */
+    .mobile-search {
+        display: block;
+    }
+
+    /* Statistics Cards */
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        padding: 20px;
+    }
+
+    .stat-info h2 {
+        font-size: 32px;
+    }
+
+    .stat-icon {
+        font-size: 40px;
+    }
+
+    /* Content Section */
+    .content-section {
+        padding: 20px 15px;
+        border-radius: 10px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 20px;
+    }
+
+    .btn-primary-custom {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+    }
+
+    /* Table Adjustments */
+    table {
+        font-size: 12px;
+    }
+
+    table th,
+    table td {
+        padding: 10px 8px;
+    }
+
+    .action-btn {
+        padding: 5px 10px;
+        font-size: 11px;
+        margin-bottom: 5px;
+    }
+
+    /* Quick Actions */
+    .content-section .row .col-md-3 {
+        margin-bottom: 15px;
+    }
+}
+
+/* Small Mobile Screens (max-width: 480px) */
+@media screen and (max-width: 480px) {
+    /* Header */
+    .header-content {
+        padding: 0 15px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    .notification-icon {
+        font-size: 20px;
+    }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+
+    /* Sidebar */
+    .nav-item {
+        padding: 12px 20px;
+        gap: 12px;
+    }
+
+    .nav-item i {
+        font-size: 18px;
+    }
+
+    .nav-item span {
+        font-size: 14px;
+    }
+
+    /* Main Content */
+    .main-content {
+        padding: 20px 10px;
+    }
+
+    /* Statistics Cards */
+    .stat-card {
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    .stat-info h2 {
+        font-size: 28px;
+    }
+
+    .stat-info p {
+        font-size: 12px;
+    }
+
+    .stat-icon {
+        font-size: 35px;
+    }
+
+    /* Content Section */
+    .content-section {
+        padding: 15px 10px;
+    }
+
+    .section-header h2 {
+        font-size: 18px;
+    }
+
+    .btn-primary-custom {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+
+    /* Table */
+    .table-responsive {
+        overflow-x: scroll;
+    }
+
+    table {
+        min-width: 600px;
+        font-size: 11px;
+    }
+
+    table th,
+    table td {
+        padding: 8px 6px;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    .action-btn {
+        padding: 4px 8px;
+        font-size: 10px;
+        margin-right: 3px;
+    }
+}
+
+/* Extra Small Screens (max-width: 360px) */
+@media screen and (max-width: 360px) {
+    .logo {
+        font-size: 16px;
+    }
+
+    .user-section {
+        gap: 10px;
+    }
+
+    .notification-icon {
+        font-size: 18px;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 11px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-info h2 {
+        font-size: 24px;
+    }
+
+    .stat-info p {
+        font-size: 11px;
+    }
+
+    .stat-icon {
+        font-size: 30px;
+    }
+
+    .section-header h2 {
+        font-size: 16px;
+    }
+
+    .btn-primary-custom {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+}
+
+/* Landscape Mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .sidebar {
+        height: calc(100vh - 60px);
+    }
+
+    .main-content {
+        margin-top: 60px;
+    }
+
+    header {
+        height: 60px;
+    }
+
+    .stats-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-info h2 {
+        font-size: 24px;
+    }
+
+    .stat-icon {
+        font-size: 30px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    header,
+    .sidebar,
+    .mobile-search,
+    .btn-primary-custom,
+    .action-btn {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        margin-top: 0;
+    }
+
+    .content-section {
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+}
+
+/* Dark Mode Support (Optional - for future enhancement) */
+@media (prefers-color-scheme: dark) {
+    /* Add dark mode styles here if needed */
+}
+
+/* Accessibility - Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
